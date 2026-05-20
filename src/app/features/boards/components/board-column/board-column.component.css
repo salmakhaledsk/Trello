@@ -1,0 +1,9 @@
+.board-column {
+  min-width: 280px;
+}
+
+.column-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}

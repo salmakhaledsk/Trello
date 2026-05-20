@@ -1,1 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+/* Import Bootstrap CSS */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Import Plus Jakarta Sans from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+/* ===== Reset ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #828fa3;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #635fc7;
+}
+.subtask-box {
+  background: #f4f7fd;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: start;
+}
+
+.modal-content {
+  border-radius: 20px;
+}

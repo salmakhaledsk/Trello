@@ -1,0 +1,190 @@
+<aside class="sidebar d-flex flex-column">
+
+  <!-- Logo -->
+  <div class="sidebar-logo d-flex align-items-center gap-2 px-4 py-4">
+    <img
+      src="assets/images/Group5.png"
+      alt="Kanban logo"
+      width="24"
+      height="24"
+    >
+    <span class="logo-text fw-bold fs-5">
+      kanban
+    </span>
+
+  </div>
+
+  <!-- Boards Count -->
+  <div class="px-4 mb-2">
+
+    <span class="boards-label text-uppercase fw-semibold">
+
+      All Boards (3)
+
+    </span>
+
+  </div>
+
+  <!-- Board List -->
+  <nav class="flex-grow-1">
+
+    <ul class="list-unstyled mb-0">
+
+      <!-- Active Board -->
+      <li>
+
+        <a
+          href="#"
+          class="sidebar-nav-item active-board d-flex align-items-center gap-3 px-4 py-3 text-decoration-none"
+        >
+
+          <img
+            src="assets/images/fluentboardregular.png"
+            alt="Board icon"
+            width="16"
+            height="16"
+          >
+
+          <span class="fw-semibold board-name">
+
+            Platform Launch
+
+          </span>
+
+        </a>
+
+      </li>
+
+      <!-- Board -->
+      <li>
+
+        <a
+          href="#"
+          class="sidebar-nav-item d-flex align-items-center gap-3 px-4 py-3 text-decoration-none"
+        >
+
+          <img
+            src="assets/images/fluentboardregular.png"
+            alt="Board icon"
+            width="16"
+            height="16"
+          >
+
+          <span class="fw-semibold board-name">
+
+            Marketing Plan
+
+          </span>
+
+        </a>
+
+      </li>
+
+      <!-- Board -->
+      <li>
+
+        <a
+          href="#"
+          class="sidebar-nav-item d-flex align-items-center gap-3 px-4 py-3 text-decoration-none"
+        >
+
+          <img
+            src="assets/images/fluentboardregular.png"
+            alt="Board icon"
+            width="16"
+            height="16"
+          >
+
+          <span class="fw-semibold board-name">
+
+            Roadmap
+
+          </span>
+
+        </a>
+
+      </li>
+
+      <!-- Create Board -->
+      <li>
+
+        <a
+          href="#"
+          class="sidebar-nav-item create-board d-flex align-items-center gap-3 px-4 py-3 text-decoration-none"
+        >
+
+          <img
+            src="assets/images/fluentboardregular.png"
+            alt="Board icon"
+            width="16"
+            height="16"
+          >
+
+          <span class="fw-semibold board-name">
+
+            + Create New Board
+
+          </span>
+
+        </a>
+
+      </li>
+
+    </ul>
+
+  </nav>
+
+  <!-- Bottom -->
+  <div class="sidebar-bottom px-4 pb-4">
+
+    <!-- Theme Toggle -->
+    <div
+      class="theme-toggle d-flex align-items-center justify-content-center gap-3 rounded-3 py-3"
+    >
+
+      <img
+        src="assets/images/lightTheme.png"
+        alt="Light theme"
+        width="18"
+        height="18"
+      >
+
+      <div class="form-check form-switch mb-0">
+
+        <input
+          class="form-check-input dark-switch"
+          type="checkbox"
+          id="darkModeToggle"
+        />
+
+      </div>
+
+      <img
+        src="assets/images/darkTheme.png"
+        alt="Dark theme"
+        width="16"
+        height="16"
+      >
+
+    </div>
+
+    <!-- Hide Sidebar -->
+    <button
+      class="hide-sidebar-btn btn d-flex align-items-center gap-2 mt-3 px-2 py-2 w-100 text-start"
+      (click)="toggleSidebar.emit()"
+    >
+
+      <img
+        src="assets/images/eye-slash.1.png"
+        alt="Hide sidebar"
+        width="18"
+        height="16"
+      >
+
+      Hide Sidebar
+
+    </button>
+
+  </div>
+
+</aside>

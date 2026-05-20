@@ -1,0 +1,18 @@
+<!-- shell.component.html -->
+<div class="app-shell d-flex" style="height: 100vh; overflow: hidden;">
+  <!-- Sidebar -->
+  @if (sidebarVisible()) {
+    <app-sidebar (toggleSidebar)="toggleSidebar()"></app-sidebar>
+  }
+
+  <!-- Main Content -->
+  <div class="main-content d-flex flex-column flex-grow-1" style="overflow: hidden;">
+    <!-- Header -->
+    <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+
+    <!-- Board Page Content -->
+    <div class="board-wrapper flex-grow-1" style="overflow-y: auto;">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

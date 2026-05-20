@@ -1,0 +1,143 @@
+<div
+  class="modal fade"
+  id="addTaskModal"
+  tabindex="-1"
+>
+
+  <div class="modal-dialog modal-dialog-centered">
+
+    <div class="modal-content border-0 rounded-4 p-3">
+
+      <div class="modal-body">
+
+        <h5 class="fw-bold mb-4" >
+
+          Add New Task
+
+        </h5>
+
+        <!-- TITLE -->
+
+        <div class="mb-3">
+
+          <label class="form-label fw-semibold small">
+
+            Title
+
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            placeholder="e.g. Take coffee break"
+          >
+
+        </div>
+
+        <!-- DESCRIPTION -->
+
+        <div class="mb-3">
+
+          <label class="form-label fw-semibold small">
+
+            Description
+
+          </label>
+
+          <textarea
+            rows="4"
+            class="form-control"
+            placeholder="e.g. It's always good to take a break."
+          ></textarea>
+
+        </div>
+
+        <!-- SUBTASKS -->
+
+        <div class="mb-3">
+
+          <label class="form-label fw-semibold small">
+
+            Subtasks
+
+          </label>
+
+          <div class="d-flex flex-column gap-2">
+
+            <div class="d-flex gap-2">
+
+              <input
+                type="text"
+                class="form-control"
+                placeholder="e.g. Make coffee"
+              >
+
+              <button class="btn btn-light">
+                X
+              </button>
+
+            </div>
+
+            <div class="d-flex gap-2">
+
+              <input
+                type="text"
+                class="form-control"
+                placeholder="e.g. Drink coffee"
+              >
+
+              <button class="btn btn-light">
+                X
+              </button>
+
+            </div>
+
+          </div>
+
+          <button
+            class="btn btn-light w-100 rounded-pill mt-3 fw-semibold"
+          >
+
+            + Add New Subtask
+
+          </button>
+
+        </div>
+
+        <!-- STATUS -->
+
+        <div class="mb-4">
+
+          <label class="form-label fw-semibold small">
+
+            Status
+
+          </label>
+
+          <select class="form-select">
+
+            <option>Todo</option>
+            <option>Doing</option>
+            <option>Done</option>
+
+          </select>
+
+        </div>
+
+        <!-- BUTTON -->
+
+        <button
+          class="btn btn-primary w-100 rounded-pill py-2" style="background-color: #635FC7; color:#ffffff ;"
+        >
+
+          Create Task
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
