@@ -1,32 +1,23 @@
 <div class="board-column">
-
   <!-- HEADER -->
 
   <div class="d-flex align-items-center gap-2 mb-4">
+    <div class="d-flex align-items-center gap-2 mb-4">
+      <span class="column-dot" [style.backgroundColor]="color"> </span>
 
-     <span
-      class="column-dot"
-      [style.backgroundColor]="color">
-    </span>
-
-       <p class="small text-uppercase text-secondary fw-bold mb-0">
-
-      {{ title }}
-
-    </p>
-
+      <h6 class="m-0 text-uppercase">
+        {{ title }}
+      </h6>
+    </div>
   </div>
 
   <!-- TASKS -->
 
   <div class="d-flex flex-column gap-3">
-
     <app-task-card></app-task-card>
 
     <app-task-card></app-task-card>
 
     <app-task-card></app-task-card>
-
   </div>
-
 </div>

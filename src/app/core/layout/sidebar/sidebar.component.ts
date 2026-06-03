@@ -8,4 +8,7 @@ import { Component, output } from '@angular/core';
 })
 export class SidebarComponent {
   toggleSidebar = output<void>();
+
+
+  
 }

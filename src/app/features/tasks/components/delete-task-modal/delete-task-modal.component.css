@@ -1,0 +1,42 @@
+/* ===========================
+   DELETE TASK MODAL
+   =========================== */
+
+.task-desc {
+  font-size: 13px;
+  font-weight: 500;
+  color: #828FA3;
+  line-height: 1.7;
+}
+
+/* Delete Button */
+.btn-delete {
+  background: #EA5555 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 20px !important;
+  padding: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+.btn-delete:hover {
+  background: #FF9898 !important;
+}
+
+/* Cancel Button */
+.btn-cancel {
+  background: #F4F7FD !important;
+  color: #635FC7 !important;
+  border: none !important;
+  border-radius: 20px !important;
+  padding: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+.btn-cancel:hover {
+  background: rgba(99, 95, 199, 0.25) !important;
+}

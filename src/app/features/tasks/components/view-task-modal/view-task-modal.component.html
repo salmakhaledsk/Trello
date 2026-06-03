@@ -1,116 +1,83 @@
-<div
-  class="modal fade"
-  id="viewTaskModal"
-  tabindex="-1"
->
-
+<div class="modal fade" id="viewTaskModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-
     <div class="modal-content border-0 rounded-4 p-3">
-
       <div class="modal-body">
 
-        <!-- TITLE -->
+        <!-- TITLE + DOTS -->
+        <div class="d-flex justify-content-between align-items-start mb-4">
 
-        <div class="d-flex justify-content-between mb-4">
-
-          <h5 class="fw-bold">
-
+          <h5 class="fw-bold me-3">
             Research pricing points of various competitors and trial different business models
-
           </h5>
 
-          <button
-            class="btn-close"
-            data-bs-dismiss="modal">
-          </button>
-
-        </div>
-
-        <!-- DESCRIPTION -->
-
-        <p class="text-secondary small mb-4">
-
-          We know what we're planning to build for version one.
-          Now we need to finalise the first pricing model we'll use.
-          Keep iterating the subtasks until we have a coherent proposition.
-
-        </p>
-
-        <!-- SUBTASKS -->
-
-        <div class="mb-4">
-
-          <p class="fw-semibold small mb-3">
-
-            Subtasks (2 of 3)
-
-          </p>
-
-          <div class="d-flex flex-column gap-2">
-
-            <label class="subtask-box">
-
-              <input type="checkbox" checked>
-
-              <span>
-                Research competitor pricing and business models
-              </span>
-
-            </label>
-
-            <label class="subtask-box">
-
-              <input type="checkbox" checked>
-
-              <span>
-                Outline a business model that works for our solution
-              </span>
-
-            </label>
-
-            <label class="subtask-box">
-
-              <input type="checkbox">
-
-              <span>
-                Talk to potential customers about our proposed solution and ask for fair price expectancy
-              </span>
-
-            </label>
-
+          <div class="dropdown flex-shrink-0">
+            <button class="btn-dots" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end task-dropdown shadow">
+              <li>
+                <button
+                  class="dropdown-item"
+                  data-bs-dismiss="modal"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editTaskModal"
+                >Edit Task</button>
+              </li>
+              <li>
+                <button
+                  class="dropdown-item text-danger"
+                  data-bs-dismiss="modal"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteTaskModal"
+                >Delete Task</button>
+              </li>
+            </ul>
           </div>
 
         </div>
 
+        <!-- DESCRIPTION -->
+        <p class="text-secondary small mb-4">
+          We know what we're planning to build for version one.
+          Now we need to finalise the first pricing model we'll use.
+          Keep iterating the subtasks until we have a coherent proposition.
+        </p>
+
+        <!-- SUBTASKS -->
+        <div class="mb-4">
+          <p class="fw-semibold small mb-3">Subtasks (2 of 3)</p>
+
+          <div class="d-flex flex-column gap-2">
+            <label class="subtask-box">
+              <input type="checkbox" checked>
+              <span>Research competitor pricing and business models</span>
+            </label>
+
+            <label class="subtask-box">
+              <input type="checkbox" checked>
+              <span>Outline a business model that works for our solution</span>
+            </label>
+
+            <label class="subtask-box">
+              <input type="checkbox">
+              <span>Talk to potential customers about our proposed solution and ask for fair price expectancy</span>
+            </label>
+          </div>
+        </div>
+
         <!-- STATUS -->
-
         <div>
-
-          <label class="form-label fw-semibold small">
-
-            Current Status
-
-          </label>
-
+          <label class="form-label fw-semibold small">Current Status</label>
           <select class="form-select">
-
             <option>Todo</option>
-
-            <option selected>
-              Doing
-            </option>
-
+            <option selected>Doing</option>
             <option>Done</option>
-
           </select>
-
         </div>
 
       </div>
-
     </div>
-
   </div>
-
 </div>

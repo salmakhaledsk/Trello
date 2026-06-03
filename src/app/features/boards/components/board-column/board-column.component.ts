@@ -11,4 +11,5 @@ export class BoardColumnComponent {
   @Input() title: string = '';
 
   @Input() color: string = '';
+  
 }
