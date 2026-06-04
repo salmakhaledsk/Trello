@@ -16,7 +16,16 @@
     </div>
   </div>
 } @else {
-  <div class="p-4 text-secondary">No board selected.</div>
+  <div class="empty-state">
+    <p class="empty-state-text">This board is empty. Create a new column to get started.</p>
+    <button
+      class="empty-state-btn"
+      data-bs-toggle="modal"
+      data-bs-target="#addBoardModal"
+    >
+      + Create New Board
+    </button>
+  </div>
 }
 
 <app-view-task-modal></app-view-task-modal>
