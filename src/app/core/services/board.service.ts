@@ -1,36 +1,22 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Board } from '../models/board';
 import { Column } from '../models/column';
 import { Subtask, Task } from '../models/task';
 
-const STORAGE_KEY = 'kanban-boards';
-
 @Injectable({
   providedIn: 'root',
 })
 export class BoardService {
-
   http = inject(HttpClient);
 
   boards = signal<Board[]>([]);
   selectedBoardId = signal<string | null>(null);
   selectedTaskId = signal<string | null>(null);
 
-  boardsLoaded = false;
-
-  constructor() {
-    effect(() => {
-      const currentBoards = this.boards();
-      if (this.boardsLoaded) {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(currentBoards));
-        } catch {
-          // localStorage might be full or disabled - ignore
-        }
-      }
-    });
+  saveBoards() {
+    localStorage.setItem('kanban-boards', JSON.stringify(this.boards()));
   }
 
   selectedBoard = computed<Board | null>(() => {
@@ -41,45 +27,41 @@ export class BoardService {
   selectedTask = computed<Task | null>(() => {
     const board = this.selectedBoard();
     const taskId = this.selectedTaskId();
-    if (!board || !taskId) {
-      return null;
-    }
+
+    if (!board || !taskId) return null;
 
     for (const column of board.columns) {
       const task = column.tasks.find((task: Task) => task.id === taskId);
-      if (task) {
-        return task;
-      }
+      if (task) return task;
     }
 
     return null;
   });
 
   async loadBoards() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored) as Board[];
-        this.boards.set(parsed);
-        this.boardsLoaded = true;
-        if (parsed.length > 0) {
-          this.selectedBoardId.set(parsed[0].id);
-        }
-        return;
-      } catch {
-        // stored data is corrupted, fall through to JSON
+    const storedBoards = localStorage.getItem('kanban-boards');
+
+    if (storedBoards) {
+      this.boards.set(JSON.parse(storedBoards));
+
+      if (this.boards().length > 0) {
+        this.selectedBoardId.set(this.boards()[0].id);
       }
+
+      return;
     }
 
     const data = await firstValueFrom(
       this.http.get<{ boards: Board[] }>('assets/data/data.json')
     );
+
     this.boards.set(data.boards);
 
     if (data.boards.length > 0) {
       this.selectedBoardId.set(data.boards[0].id);
     }
-    this.boardsLoaded = true;
+
+    this.saveBoards();
   }
 
   selectBoard(id: string) {
@@ -93,34 +75,34 @@ export class BoardService {
   addBoard(name: string, columnNames: string[] = []) {
     const newBoard: Board = {
       id: this.generateId(),
-      name: name,
+      name,
       columns: columnNames
-        .filter((columnName: string) => columnName.trim().length > 0)
-        .map((columnName: string): Column => ({
+        .filter((c) => c.trim().length > 0)
+        .map((c): Column => ({
           id: this.generateId(),
-          name: columnName.trim(),
+          name: c.trim(),
           tasks: [],
-        }))
+        })),
     };
 
-    this.boards.update((currentBoards: Board[]) => [...currentBoards, newBoard]);
+    this.boards.update((boards) => [...boards, newBoard]);
+    this.saveBoards();
   }
 
   updateBoard(id: string, name: string, columnNames: string[] = []) {
-    this.boards.update((currentBoards: Board[]) =>
-      currentBoards.map((board: Board) => {
+    this.boards.update((boards) =>
+      boards.map((board) => {
         if (board.id !== id) return board;
 
         const updatedColumns: Column[] = columnNames
-          .filter((columnName: string) => columnName.trim().length > 0)
-          .map((columnName: string): Column => {
-            const existing = board.columns.find((column: Column) => column.name === columnName);
-            if (existing) {
-              return { ...existing, name: columnName };
-            }
+          .filter((c) => c.trim().length > 0)
+          .map((c) => {
+            const existing = board.columns.find((col) => col.name === c);
+            if (existing) return { ...existing, name: c };
+
             return {
               id: this.generateId(),
-              name: columnName.trim(),
+              name: c.trim(),
               tasks: [],
             };
           });
@@ -132,12 +114,16 @@ export class BoardService {
         };
       })
     );
+
+    this.saveBoards();
   }
 
   deleteBoard(id: string) {
-    this.boards.update((currentBoards: Board[]) =>
-      currentBoards.filter((board: Board) => board.id !== id)
+    this.boards.update((boards) =>
+      boards.filter((board) => board.id !== id)
     );
+
+    this.saveBoards();
 
     if (this.selectedBoardId() === id) {
       this.selectedBoardId.set(null);
@@ -145,59 +131,68 @@ export class BoardService {
   }
 
   addTask(boardId: string, columnId: string, task: Task) {
-    this.boards.update((currentBoards: Board[]) =>
-      currentBoards.map((board: Board) => {
+    this.boards.update((boards) =>
+      boards.map((board) => {
         if (board.id !== boardId) return board;
+
         return {
           ...board,
-          columns: board.columns.map((column: Column) => {
-            if (column.id !== columnId) return column;
-            return {
-              ...column,
-              tasks: [...column.tasks, task],
-            };
-          }),
+          columns: board.columns.map((col) =>
+            col.id === columnId
+              ? { ...col, tasks: [...col.tasks, task] }
+              : col
+          ),
         };
       })
     );
+
+    this.saveBoards();
   }
 
   updateTask(boardId: string, columnId: string, updatedTask: Task) {
-    this.boards.update((currentBoards: Board[]) =>
-      currentBoards.map((board: Board) => {
+    this.boards.update((boards) =>
+      boards.map((board) => {
         if (board.id !== boardId) return board;
+
         return {
           ...board,
-          columns: board.columns.map((column: Column) => {
-            if (column.id !== columnId) return column;
+          columns: board.columns.map((col) => {
+            if (col.id !== columnId) return col;
+
             return {
-              ...column,
-              tasks: column.tasks.map((task: Task) =>
-                task.id === updatedTask.id ? updatedTask : task
+              ...col,
+              tasks: col.tasks.map((t) =>
+                t.id === updatedTask.id ? updatedTask : t
               ),
             };
           }),
         };
       })
     );
+
+    this.saveBoards();
   }
 
   deleteTask(boardId: string, columnId: string, taskId: string) {
-    this.boards.update((currentBoards: Board[]) =>
-      currentBoards.map((board: Board) => {
+    this.boards.update((boards) =>
+      boards.map((board) => {
         if (board.id !== boardId) return board;
+
         return {
           ...board,
-          columns: board.columns.map((column: Column) => {
-            if (column.id !== columnId) return column;
+          columns: board.columns.map((col) => {
+            if (col.id !== columnId) return col;
+
             return {
-              ...column,
-              tasks: column.tasks.filter((task: Task) => task.id !== taskId),
+              ...col,
+              tasks: col.tasks.filter((t) => t.id !== taskId),
             };
           }),
         };
       })
     );
+
+    this.saveBoards();
   }
 
   moveTask(
@@ -209,51 +204,53 @@ export class BoardService {
   ) {
     let movedTask: Task | null = null;
 
-    this.boards.update((currentBoards: Board[]) =>
-      currentBoards.map((board: Board) => {
+    this.boards.update((boards) =>
+      boards.map((board) => {
         if (board.id !== boardId) return board;
 
-        const fromColumn = board.columns.find(
-          (column: Column) => column.id === fromColumnId
-        );
-        const toColumn = board.columns.find(
-          (column: Column) => column.id === toColumnId
-        );
+        const fromColumn = board.columns.find((c) => c.id === fromColumnId);
+        const toColumn = board.columns.find((c) => c.id === toColumnId);
+
         if (!fromColumn || !toColumn) return board;
 
-        const taskIndex = fromColumn.tasks.findIndex(
-          (task: Task) => task.id === taskId
-        );
+        const taskIndex = fromColumn.tasks.findIndex((t) => t.id === taskId);
         if (taskIndex === -1) return board;
 
-        const task: Task = fromColumn.tasks[taskIndex];
+        const task = fromColumn.tasks[taskIndex];
+
         movedTask = {
           ...task,
           status: toColumn.name,
         };
 
-        const newFromTasks: Task[] = fromColumn.tasks.filter(
-          (taskItem: Task) => taskItem.id !== taskId
+        const newFromTasks = fromColumn.tasks.filter(
+          (t) => t.id !== taskId
         );
 
-        const insertAt = Math.max(0, Math.min(newIndex, toColumn.tasks.length));
-        const newToTasks: Task[] = [...toColumn.tasks];
+        const insertAt = Math.max(
+          0,
+          Math.min(newIndex, toColumn.tasks.length)
+        );
+
+        const newToTasks = [...toColumn.tasks];
         newToTasks.splice(insertAt, 0, movedTask);
 
         return {
           ...board,
-          columns: board.columns.map((column: Column) => {
-            if (column.id === fromColumnId) {
-              return { ...column, tasks: newFromTasks };
+          columns: board.columns.map((col) => {
+            if (col.id === fromColumnId) {
+              return { ...col, tasks: newFromTasks };
             }
-            if (column.id === toColumnId) {
-              return { ...column, tasks: newToTasks };
+            if (col.id === toColumnId) {
+              return { ...col, tasks: newToTasks };
             }
-            return column;
+            return col;
           }),
         };
       })
     );
+
+    this.saveBoards();
   }
 
   toggleSubtask(
@@ -262,25 +259,27 @@ export class BoardService {
     taskId: string,
     subtaskIndex: number
   ) {
-    this.boards.update((currentBoards: Board[]) =>
-      currentBoards.map((board: Board) => {
+    this.boards.update((boards) =>
+      boards.map((board) => {
         if (board.id !== boardId) return board;
+
         return {
           ...board,
-          columns: board.columns.map((column: Column) => {
-            if (column.id !== columnId) return column;
+          columns: board.columns.map((col) => {
+            if (col.id !== columnId) return col;
+
             return {
-              ...column,
-              tasks: column.tasks.map((task: Task) => {
+              ...col,
+              tasks: col.tasks.map((task) => {
                 if (task.id !== taskId) return task;
+
                 const updatedSubtasks: Subtask[] = (task.subtasks ?? []).map(
-                  (subtask: Subtask, index: number) => {
-                    if (index === subtaskIndex) {
-                      return { ...subtask, isCompleted: !subtask.isCompleted };
-                    }
-                    return subtask;
-                  }
+                  (subtask, index) =>
+                    index === subtaskIndex
+                      ? { ...subtask, isCompleted: !subtask.isCompleted }
+                      : subtask
                 );
+
                 return { ...task, subtasks: updatedSubtasks };
               }),
             };
@@ -288,6 +287,8 @@ export class BoardService {
         };
       })
     );
+
+    this.saveBoards();
   }
 
   generateId(): string {
