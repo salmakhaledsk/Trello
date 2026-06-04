@@ -5,9 +5,7 @@ import { Board } from '../models/board';
 import { Column } from '../models/column';
 import { Subtask, Task } from '../models/task';
 
-interface DataJson {
-  boards: Board[];
-}
+
 
 @Injectable({
   providedIn: 'root',
@@ -42,16 +40,17 @@ export class BoardService {
     return null;
   });
 
-  async loadBoards() {
-    const data: DataJson = await firstValueFrom(
-      this.http.get<DataJson>('assets/data/data.json')
-    );
-    this.boards.set(data.boards);
+ async loadBoards() {
+  const { boards } = await firstValueFrom(
+    this.http.get<{ boards: Board[] }>('assets/data/data.json')
+  );
 
-    if (data.boards.length > 0) {
-      this.selectedBoardId.set(data.boards[0].id);
-    }
+  this.boards.set(boards);
+
+  if (boards.length > 0) {
+    this.selectedBoardId.set(boards[0].id);
   }
+}
 
   selectBoard(id: string) {
     this.selectedBoardId.set(id);
