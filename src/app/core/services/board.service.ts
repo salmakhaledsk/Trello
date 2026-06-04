@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Board } from '../models/board';
 import { Column } from '../models/column';
 import { Subtask, Task } from '../models/task';
 
-
+const STORAGE_KEY = 'kanban-boards';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +17,21 @@ export class BoardService {
   boards = signal<Board[]>([]);
   selectedBoardId = signal<string | null>(null);
   selectedTaskId = signal<string | null>(null);
+
+  boardsLoaded = false;
+
+  constructor() {
+    effect(() => {
+      const currentBoards = this.boards();
+      if (this.boardsLoaded) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(currentBoards));
+        } catch {
+          // localStorage might be full or disabled - ignore
+        }
+      }
+    });
+  }
 
   selectedBoard = computed<Board | null>(() => {
     const id = this.selectedBoardId();
@@ -40,17 +55,32 @@ export class BoardService {
     return null;
   });
 
- async loadBoards() {
-  const { boards } = await firstValueFrom(
-    this.http.get<{ boards: Board[] }>('assets/data/data.json')
-  );
+  async loadBoards() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored) as Board[];
+        this.boards.set(parsed);
+        this.boardsLoaded = true;
+        if (parsed.length > 0) {
+          this.selectedBoardId.set(parsed[0].id);
+        }
+        return;
+      } catch {
+        // stored data is corrupted, fall through to JSON
+      }
+    }
 
-  this.boards.set(boards);
+    const data = await firstValueFrom(
+      this.http.get<{ boards: Board[] }>('assets/data/data.json')
+    );
+    this.boards.set(data.boards);
 
-  if (boards.length > 0) {
-    this.selectedBoardId.set(boards[0].id);
+    if (data.boards.length > 0) {
+      this.selectedBoardId.set(data.boards[0].id);
+    }
+    this.boardsLoaded = true;
   }
-}
 
   selectBoard(id: string) {
     this.selectedBoardId.set(id);
