@@ -1,23 +1,26 @@
 <div class="board-column">
-  <!-- HEADER -->
 
   <div class="d-flex align-items-center gap-2 mb-4">
-    <div class="d-flex align-items-center gap-2 mb-4">
-      <span class="column-dot" [style.backgroundColor]="color"> </span>
-
-      <h6 class="m-0 text-uppercase">
-        {{ title }}
-      </h6>
-    </div>
+    <span
+      class="column-dot"
+      [class.dot-todo]="column.name === 'Todo'"
+      [class.dot-doing]="column.name === 'Doing'"
+      [class.dot-done]="column.name === 'Done'"
+    ></span>
+    <span>
+      {{ column.name }}
+      ({{ column.tasks.length }})
+    </span>
   </div>
-
-  <!-- TASKS -->
 
   <div class="d-flex flex-column gap-3">
-    <app-task-card></app-task-card>
-
-    <app-task-card></app-task-card>
-
-    <app-task-card></app-task-card>
+    @for (task of column.tasks; track task.id) {
+      <app-task-card
+        [task]="task"
+        [boardId]="boardId"
+        [columnId]="column.id" >
+      </app-task-card>
+    }
   </div>
+
 </div>

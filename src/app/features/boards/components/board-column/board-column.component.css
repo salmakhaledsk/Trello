@@ -1,9 +1,23 @@
 .board-column {
   min-width: 280px;
+  color: var(--text-primary);
 }
 
 .column-dot {
-  width: 12px;
-  height: 12px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-todo {
+  background-color: #49C4E5;
+}
+
+.dot-doing {
+  background-color: #8471F2;
+}
+
+.dot-done {
+  background-color: #67E2AE;
 }

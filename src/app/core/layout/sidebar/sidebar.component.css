@@ -1,21 +1,21 @@
 .sidebar {
   width: 260px;
   min-width: 260px;
-  background-color: #ffffff;
-  border-right: 1px solid #e4e6f0;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
   height: 100vh;
   transition: width 0.3s ease;
   overflow: hidden;
 }
 
 .logo-text {
-  color: #000112;
+  color: var(--text-primary);
   letter-spacing: -0.3px;
 }
 
 .boards-label {
   font-size: 11px;
-  color: #828fa3;
+  color: var(--text-secondary);
   letter-spacing: 2px;
 }
 
@@ -26,41 +26,42 @@
 .sidebar-nav-item {
   border-radius: 0 25px 25px 0;
   margin-right: 20px;
-  color: #828fa3;
+  color: var(--text-secondary);
   transition: 0.2s ease;
 }
 
 .sidebar-nav-item:hover {
-  background-color: #f0effa;
-  color: #635fc7;
+  background-color: var(--bg-main);
+  color: var(--primary);
 }
 
 .active-board {
-  background-color: #635fc7;
+  background-color: var(--primary);
+  color: #ffffff;
 }
 
 .active-board .board-name {
-  color: white;
+  color: #ffffff;
 }
 
 .create-board {
-  color: #635fc7;
+  color: var(--primary);
 }
 
 .theme-toggle {
-  background-color: #f4f7fd;
+  background-color: var(--bg-main);
 }
 
 .dark-switch {
   width: 40px;
   height: 20px;
-  background-color: #635fc7;
-  border-color: #635fc7;
+  background-color: var(--primary);
+  border-color: var(--primary);
   cursor: pointer;
 }
 
 .hide-sidebar-btn {
-  color: #828fa3;
+  color: var(--text-secondary);
   font-size: 14px;
   font-weight: 600;
   border: none;
@@ -69,5 +70,5 @@
 }
 
 .hide-sidebar-btn:hover {
-  color: #635fc7;
+  color: var(--primary);
 }

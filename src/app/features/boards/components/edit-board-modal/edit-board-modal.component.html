@@ -3,62 +3,61 @@
     <div class="modal-content border-0 rounded-4 p-3">
       <div class="modal-body">
         <!-- TITLE -->
-
         <h5 class="fw-bold mb-4">Edit Board</h5>
 
-        <!-- BOARD NAME -->
-
-        <div class="mb-4">
-          <label class="form-label fw-semibold small"> Board Name </label>
-
-          <input type="text" class="form-control" value="Platform Launch" />
-        </div>
-
-        <!-- BOARD COLUMNS -->
-
-        <div class="mb-4">
-          <label class="form-label fw-semibold small mb-3">
-            Board Columns
-          </label>
-
-          <div class="d-flex flex-column gap-3">
-            <!-- Todo -->
-
-            <div class="d-flex gap-2">
-              <input type="text" class="form-control" value="Todo" />
-
-              <button class="btn btn-light px-3">x</button>
-            </div>
-
-            <!-- Doing -->
-
-            <div class="d-flex gap-2">
-              <input type="text" class="form-control" value="Doing" />
-
-              <button class="btn btn-light px-3">x</button>
-            </div>
-
-            <!-- Done -->
-
-            <div class="d-flex gap-2">
-              <input type="text" class="form-control" value="Done" />
-
-              <button class="btn btn-light px-3">x</button>
-            </div>
+        @if (selectedBoard(); as board) {
+          <!-- BOARD NAME -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold small">Board Name</label>
+            <input
+              type="text"
+              class="form-control"
+              [ngModel]="boardName()"
+              (ngModelChange)="boardName.set($event)"
+              name="editBoardName"
+            />
           </div>
 
-          <!-- ADD COLUMN BUTTON -->
+          <!-- BOARD COLUMNS -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold small mb-3">Board Columns</label>
 
-          <button class="btn btn-light w-100 rounded-pill mt-3 fw-semibold">
-            + Add New Column
+            <div class="d-flex flex-column gap-3">
+              @for (col of columns(); track $index) {
+                <div class="d-flex gap-2">
+                  <input
+                    type="text"
+                    class="form-control"
+                    [ngModel]="col"
+                    (ngModelChange)="updateColumn($index, $event)"
+                    [name]="'edit-col-' + $index"
+                  />
+                  <button class="btn btn-light px-3" (click)="removeColumn($index)">x</button>
+                </div>
+              }
+            </div>
+
+            <!-- ADD COLUMN BUTTON -->
+            <button
+              class="btn btn-light w-100 rounded-pill mt-3 fw-semibold"
+              (click)="addColumn()"
+            >
+              + Add New Column
+            </button>
+          </div>
+
+          <!-- SAVE BUTTON -->
+          <button
+            class="btn w-100 rounded-pill py-2"
+            style="background-color: #635FC7; color: #ffffff;"
+            (click)="save()"
+            [disabled]="!canSave()"
+          >
+            Save Changes
           </button>
-        </div>
-
-        <!-- SAVE BUTTON -->
-
-        <button class="btn  w-100 rounded-pill py-2" style="background-color: #635FC7; color:#ffffff ;">
-          Save Changes
-        </button>
+        } @else {
+          <p class="text-secondary">No board selected.</p>
+        }
       </div>
     </div>
   </div>

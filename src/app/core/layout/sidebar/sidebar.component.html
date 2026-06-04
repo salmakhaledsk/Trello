@@ -7,69 +7,38 @@
       width="24"
       height="24"
     />
-    <span class="logo-text fw-bold fs-5"> kanban </span>
+    <span class="logo-text fw-bold fs-2"> kanban </span>
   </div>
 
   <!-- Boards Count -->
   <div class="px-4 mb-2">
     <span class="boards-label text-uppercase fw-semibold">
-      All Boards (3)
+      All Boards ({{ boards().length }})
     </span>
   </div>
 
   <!-- Board List -->
   <nav class="flex-grow-1">
     <ul class="list-unstyled mb-0">
-      <!-- Active Board -->
-      <li>
-        <a
-          href="#"
-          class="sidebar-nav-item active-board d-flex align-items-center gap-3 px-4 py-3 text-decoration-none"
-        >
-          <img
-            src="assets/images/fluentboardregular.png"
-            alt="Board icon"
-            width="16"
-            height="16"
-          />
-
-          <span class="fw-semibold board-name"> Platform Launch </span>
-        </a>
-      </li>
-
-      <!-- Board -->
-      <li>
-        <a
-          href="#"
-          class="sidebar-nav-item d-flex align-items-center gap-3 px-4 py-3 text-decoration-none"
-        >
-          <img
-            src="assets/images/fluentboardregular.png"
-            alt="Board icon"
-            width="16"
-            height="16"
-          />
-
-          <span class="fw-semibold board-name"> Marketing Plan </span>
-        </a>
-      </li>
-
-      <!-- Board -->
-      <li>
-        <a
-          href="#"
-          class="sidebar-nav-item d-flex align-items-center gap-3 px-4 py-3 text-decoration-none"
-        >
-          <img
-            src="assets/images/fluentboardregular.png"
-            alt="Board icon"
-            width="16"
-            height="16"
-          />
-
-          <span class="fw-semibold board-name"> Roadmap </span>
-        </a>
-      </li>
+      @for (board of boards(); track board.id) {
+        <li>
+          <a
+            [routerLink]="board.name === 'Platform Launch' ? '/' : '/' + board.name.toLowerCase().replace(' ', '-')"
+            routerLinkActive="active-board"
+            [routerLinkActiveOptions]="{ exact: board.name === 'Platform Launch' }"
+            class="sidebar-nav-item d-flex align-items-center gap-3 px-4 py-3 text-decoration-none"
+            (click)="selectBoard(board.id)"
+          >
+            <img
+              src="assets/images/fluentboardregular.png"
+              alt="Board icon"
+              width="16"
+              height="16"
+            />
+            <span class="fw-semibold board-name"> {{ board.name }} </span>
+          </a>
+        </li>
+      }
 
       <!-- Create Board -->
       <li>
@@ -109,6 +78,8 @@
           class="form-check-input dark-switch"
           type="checkbox"
           id="darkModeToggle"
+          [checked]="isDark()"
+          (change)="toggleTheme()"
         />
       </div>
 

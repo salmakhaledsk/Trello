@@ -1,0 +1,6 @@
+/* Delete Board Modal */
+
+.modal-content {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}

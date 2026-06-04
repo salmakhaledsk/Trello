@@ -1,8 +1,8 @@
 .app-header {
-  height: 64px;
+  height: 80px;
   min-height: 64px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e4e6f0;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .toggle-sidebar-btn {
@@ -13,23 +13,27 @@
 }
 
 .board-title {
-  font-size: 20px;
-  color: #000112;
+  color: var(--text-primary);
   letter-spacing: -0.3px;
 }
 
 .add-task-btn {
-  background-color: #635fc7;
+  background-color: var(--primary);
   color: #ffffff;
   border-radius: 25px;
-  font-size: 14px;
+  font-size: 18px;
   border: none;
   transition: 0.2s ease;
 }
 
 .add-task-btn:hover {
-  background-color: #a8a4ff;
-  color: white;
+  background-color: var(--primary-hover);
+  color: #ffffff;
+}
+
+.add-task-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .menu-btn {
@@ -39,15 +43,21 @@
   height: 32px;
 }
 
+.menu-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .custom-dropdown {
   min-width: 180px;
-  border: 1px solid #e4e6f0;
+  border: 1px solid var(--border-color);
+  background-color: var(--dropdown-bg);
   border-radius: 8px;
   padding: 8px;
 }
 
 .custom-dropdown-item {
-  color: #828fa3;
+  color: var(--text-secondary);
   font-size: 14px;
   font-weight: 500;
   border-radius: 4px;
@@ -55,9 +65,9 @@
 }
 
 .custom-dropdown-item:hover {
-  background-color: #f4f7fd;
+  background-color: var(--bg-main);
 }
 
 .delete-item {
-  color: #ea5555;
+  color: var(--danger);
 }

@@ -1,5 +1,6 @@
 .task-card {
-  background: white;
+  max-width: 500px;
+  background: var(--card-bg);
   padding: 20px;
   border-radius: 16px;
   cursor: pointer;
@@ -9,4 +10,17 @@
 
 .task-card:hover {
   transform: translateY(-2px);
+}
+
+.task-card h5 {
+  color: var(--text-primary);
+  font-weight: 700;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.5;
+}
+
+.task-card p {
+  color: var(--text-secondary);
+  margin-bottom: 0;
 }

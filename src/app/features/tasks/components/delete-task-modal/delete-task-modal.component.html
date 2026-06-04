@@ -2,22 +2,25 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 rounded-4 p-3">
       <div class="modal-body">
-
-        <!-- TITLE -->
         <h5 class="fw-bold text-danger mb-3">Delete this task?</h5>
 
-        <!-- TEXT -->
-        <p class="task-desc mb-4">
-          Are you sure you want to delete the 'Build settings UI' task and its subtasks?
-          This action cannot be reversed.
-        </p>
+        @if (selectedTask(); as task) {
+          <p class="task-desc mb-4">
+            Are you sure you want to delete the '{{ task.title }}' task and its subtasks?
+            This action cannot be reversed.
+          </p>
+        } @else {
+          <p class="task-desc mb-4">No task selected.</p>
+        }
 
-        <!-- BUTTONS -->
-     <div class="d-flex gap-3">
-  <button class="btn btn-delete w-50">Delete</button>
-  <button class="btn btn-cancel w-50" data-bs-dismiss="modal">Cancel</button>
-</div>
-
+        <div class="d-flex gap-3">
+          <button
+            class="btn btn-delete w-50"
+            (click)="confirmDelete()"
+            [disabled]="!selectedTask()"
+          >Delete</button>
+          <button class="btn btn-cancel w-50" data-bs-dismiss="modal">Cancel</button>
+        </div>
       </div>
     </div>
   </div>

@@ -11,7 +11,7 @@ import { DeleteTaskModalComponent } from '../../../tasks/components/delete-task-
 import { AddBoardModalComponent } from '../../components/add-board-modal/add-board-modal.component';
 
 @Component({
-  selector: 'app-board-page',
+  selector: 'app-marketing-plan-page',
   standalone: true,
   imports: [
     CommonModule,
@@ -24,15 +24,20 @@ import { AddBoardModalComponent } from '../../components/add-board-modal/add-boa
     DeleteTaskModalComponent,
     AddBoardModalComponent,
   ],
-  templateUrl: './board-page.component.html',
-  styleUrls: ['./board-page.component.css'],
+  templateUrl: './marketing-plan-page.component.html',
+  styleUrls: ['./marketing-plan-page.component.css'],
 })
-export class BoardPageComponent implements OnInit {
+export class MarketingPlanPageComponent implements OnInit {
   boardService = inject(BoardService);
 
   selectedBoard = this.boardService.selectedBoard;
 
   ngOnInit(): void {
-    this.boardService.loadBoards();
+    this.boardService.loadBoards().then(() => {
+      const board = this.boardService.boards().find((b: any) => b.name === 'Marketing Plan');
+      if (board) {
+        this.boardService.selectBoard(board.id);
+      }
+    });
   }
 }

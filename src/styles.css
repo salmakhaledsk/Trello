@@ -1,7 +1,7 @@
-/* Import Bootstrap CSS */
+
 @import "bootstrap/dist/css/bootstrap.min.css";
 
-/* Import Plus Jakarta Sans from Google Fonts */
+
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
 /* ===== Reset ===== */
@@ -12,11 +12,19 @@
 }
 
 html,
+/* body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  transition: 0.3s;
+} */
 body {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: "Plus Jakarta Sans", sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* ===== Scrollbar ===== */
@@ -38,14 +46,118 @@ body {
   background: #635fc7;
 }
 .subtask-box {
-  background: #f4f7fd;
+  background: var(--bg-main);
   border-radius: 8px;
   padding: 12px;
   display: flex;
   gap: 12px;
   align-items: start;
+  color: var(--text-primary);
 }
 
 .modal-content {
   border-radius: 20px;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.modal-content .form-control,
+.modal-content .form-select,
+.modal-content textarea {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+}
+
+.modal-content .form-control::placeholder,
+.modal-content textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.modal-content .form-control:focus,
+.modal-content .form-select:focus,
+.modal-content textarea:focus {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--primary);
+  box-shadow: none;
+}
+:root {
+  /* Primary */
+  --primary: #635FC7;
+  --primary-hover: #A8A4FF;
+
+  /* Backgrounds */
+  --bg-main: #F4F7FD;
+  --bg-surface: #FFFFFF;
+
+  /* Text */
+  --text-primary: #000112;
+  --text-secondary: #828FA3;
+
+  /* Borders */
+  --border-color: #E4EBFA;
+
+  /* Buttons */
+  --btn-secondary-bg: #635FC71A;
+  --btn-secondary-text: #635FC7;
+
+  /* Danger */
+  --danger: #EA5555;
+  --danger-hover: #FF9898;
+
+  /* Inputs */
+  --input-bg: #FFFFFF;
+  --input-border: #828FA340;
+
+  /* Dropdown */
+  --dropdown-bg: #FFFFFF;
+
+  /* Sidebar */
+  --sidebar-bg: #FFFFFF;
+
+  /* Card */
+  --card-bg: #FFFFFF;
+}
+/* =========================
+   DARK THEME
+========================= */
+
+.dark-theme {
+  /* Primary */
+  --primary: #635FC7;
+  --primary-hover: #A8A4FF;
+
+  /* Backgrounds */
+  --bg-main: #20212C;
+  --bg-surface: #2B2C37;
+
+  /* Text */
+  --text-primary: #FFFFFF;
+  --text-secondary: #828FA3;
+
+  /* Borders */
+  --border-color: #3E3F4E;
+
+  /* Buttons */
+  --btn-secondary-bg: #FFFFFF14;
+  --btn-secondary-text: #FFFFFF;
+
+  /* Danger */
+  --danger: #EA5555;
+  --danger-hover: #FF9898;
+
+  /* Inputs */
+  --input-bg: #2B2C37;
+  --input-border: #3E3F4E;
+
+  /* Dropdown */
+  --dropdown-bg: #20212C;
+
+  /* Sidebar */
+  --sidebar-bg: #2B2C37;
+
+  /* Card */
+  --card-bg: #2B2C37;
 }

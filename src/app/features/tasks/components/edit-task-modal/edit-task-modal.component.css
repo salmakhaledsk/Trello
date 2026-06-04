@@ -5,43 +5,46 @@
 .section-label {
   font-size: 12px;
   font-weight: 700;
-  color: #828FA3;
+  color: var(--text-secondary);
 }
 
 /* Inputs */
 .task-input {
-  border: 1px solid rgba(130, 143, 163, 0.25) !important;
+  border: 1px solid var(--input-border) !important;
   border-radius: 4px !important;
   font-size: 13px !important;
   font-weight: 500 !important;
-  color: #000112 !important;
+  color: var(--text-primary) !important;
+  background-color: var(--input-bg) !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
   padding: 8px 16px !important;
 }
 
 .task-input:focus {
-  border-color: #635FC7 !important;
+  border-color: var(--primary) !important;
   box-shadow: none !important;
 }
 
 .task-input::placeholder {
-  color: rgba(0, 1, 18, 0.25) !important;
+  color: var(--text-secondary) !important;
+  opacity: 0.6;
 }
 
 /* Status Select */
 .task-select {
-  border: 1px solid rgba(130, 143, 163, 0.25) !important;
+  border: 1px solid var(--input-border) !important;
   border-radius: 4px !important;
   font-size: 13px !important;
   font-weight: 500 !important;
-  color: #000112 !important;
+  color: var(--text-primary) !important;
+  background-color: var(--input-bg) !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
   cursor: pointer;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23635FC7' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
 }
 
 .task-select:focus {
-  border-color: #635FC7 !important;
+  border-color: var(--primary) !important;
   box-shadow: none !important;
 }
 
@@ -50,7 +53,7 @@
   background: none;
   border: none;
   font-size: 20px;
-  color: #828FA3;
+  color: var(--text-secondary);
   cursor: pointer;
   padding: 0 4px;
   line-height: 1;
@@ -59,13 +62,13 @@
 }
 
 .btn-remove:hover {
-  color: #EA5555;
+  color: var(--danger);
 }
 
 /* Add Subtask Button */
 .btn-add-subtask {
-  background: #F4F7FD !important;
-  color: #635FC7 !important;
+  background: var(--bg-main) !important;
+  color: var(--primary) !important;
   border: none !important;
   border-radius: 20px !important;
   padding: 10px !important;
@@ -75,13 +78,14 @@
 }
 
 .btn-add-subtask:hover {
-  background: rgba(99, 95, 199, 0.25) !important;
+  background: var(--primary-hover) !important;
+  color: #ffffff !important;
 }
 
 /* Save Button */
 .btn-save {
-  background: #635FC7 !important;
-  color: white !important;
+  background: var(--primary) !important;
+  color: #ffffff !important;
   border: none !important;
   border-radius: 20px !important;
   padding: 12px !important;
@@ -91,5 +95,10 @@
 }
 
 .btn-save:hover {
-  background: #A8A4FF !important;
+  background: var(--primary-hover) !important;
+}
+
+.btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

@@ -5,14 +5,14 @@
 .task-desc {
   font-size: 13px;
   font-weight: 500;
-  color: #828FA3;
+  color: var(--text-secondary);
   line-height: 1.7;
 }
 
 /* Delete Button */
 .btn-delete {
-  background: #EA5555 !important;
-  color: white !important;
+  background: var(--danger) !important;
+  color: #ffffff !important;
   border: none !important;
   border-radius: 20px !important;
   padding: 12px !important;
@@ -22,13 +22,18 @@
 }
 
 .btn-delete:hover {
-  background: #FF9898 !important;
+  background: var(--danger-hover) !important;
+}
+
+.btn-delete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Cancel Button */
 .btn-cancel {
-  background: #F4F7FD !important;
-  color: #635FC7 !important;
+  background: var(--bg-main) !important;
+  color: var(--primary) !important;
   border: none !important;
   border-radius: 20px !important;
   padding: 12px !important;
@@ -38,5 +43,6 @@
 }
 
 .btn-cancel:hover {
-  background: rgba(99, 95, 199, 0.25) !important;
+  background: var(--primary-hover) !important;
+  color: #ffffff !important;
 }

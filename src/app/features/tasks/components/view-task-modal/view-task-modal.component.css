@@ -16,6 +16,11 @@
   display: block;
   width: 4px;
   height: 4px;
-  background: #828FA3;
+  background: var(--text-secondary);
   border-radius: 50%;
+}
+
+.task-dropdown {
+  background-color: var(--dropdown-bg);
+  border: 1px solid var(--border-color);
 }

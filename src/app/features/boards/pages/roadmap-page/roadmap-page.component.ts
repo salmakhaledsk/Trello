@@ -11,7 +11,7 @@ import { DeleteTaskModalComponent } from '../../../tasks/components/delete-task-
 import { AddBoardModalComponent } from '../../components/add-board-modal/add-board-modal.component';
 
 @Component({
-  selector: 'app-board-page',
+  selector: 'app-roadmap-page',
   standalone: true,
   imports: [
     CommonModule,
@@ -24,15 +24,20 @@ import { AddBoardModalComponent } from '../../components/add-board-modal/add-boa
     DeleteTaskModalComponent,
     AddBoardModalComponent,
   ],
-  templateUrl: './board-page.component.html',
-  styleUrls: ['./board-page.component.css'],
+  templateUrl: './roadmap-page.component.html',
+  styleUrls: ['./roadmap-page.component.css'],
 })
-export class BoardPageComponent implements OnInit {
+export class RoadmapPageComponent implements OnInit {
   boardService = inject(BoardService);
 
   selectedBoard = this.boardService.selectedBoard;
 
   ngOnInit(): void {
-    this.boardService.loadBoards();
+    this.boardService.loadBoards().then(() => {
+      const board = this.boardService.boards().find((b: any) => b.name === 'Roadmap');
+      if (board) {
+        this.boardService.selectBoard(board.id);
+      }
+    });
   }
 }

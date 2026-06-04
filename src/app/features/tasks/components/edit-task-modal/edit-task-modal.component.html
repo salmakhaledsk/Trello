@@ -1,63 +1,80 @@
-<div class="modal fade" id="editTaskModal"tabindex="-1">
+<div class="modal fade" id="editTaskModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 rounded-4 p-3">
       <div class="modal-body">
-
-        <!-- TITLE -->
         <h5 class="fw-bold mb-4">Edit Task</h5>
 
-        <!-- TASK TITLE -->
-        <div class="mb-3">
-          <label class="section-label d-block mb-2">Title</label>
-          <input
-            type="text"
-            class="form-control task-input"
-            value="Add authentication endpoints"
-            placeholder="e.g. Take coffee break"
-          />
-        </div>
-
-        <!-- DESCRIPTION -->
-        <div class="mb-4">
-          <label class="section-label d-block mb-2">Description</label>
-          <textarea
-            class="form-control task-input"
-            rows="4"
-            placeholder="e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little."
-          ></textarea>
-        </div>
-
-        <!-- SUBTASKS -->
-        <div class="mb-4">
-          <label class="section-label d-block mb-2">Subtasks</label>
-
-          <div class="d-flex flex-column gap-2 mb-2">
-            <div class="d-flex align-items-center gap-2">
-              <input type="text" class="form-control task-input" value="Define user model" />
-              <button class="btn-remove">&times;</button>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <input type="text" class="form-control task-input" value="Add auth endpoints" />
-              <button class="btn-remove">&times;</button>
-            </div>
+        @if (selectedTask(); as task) {
+          <!-- TASK TITLE -->
+          <div class="mb-3">
+            <label class="section-label d-block mb-2">Title</label>
+            <input
+              type="text"
+              class="form-control task-input"
+              [ngModel]="title()"
+              (ngModelChange)="title.set($event)"
+              name="editTaskTitle"
+            />
           </div>
 
-          <button class="btn btn-add-subtask w-100">+ Add New Subtask</button>
-        </div>
+          <!-- DESCRIPTION -->
+          <div class="mb-4">
+            <label class="section-label d-block mb-2">Description</label>
+            <textarea
+              class="form-control task-input"
+              rows="4"
+              [ngModel]="description()"
+              (ngModelChange)="description.set($event)"
+              name="editTaskDescription"
+            ></textarea>
+          </div>
 
-        <!-- STATUS -->
-        <div class="mb-4">
-          <label class="section-label d-block mb-2">Status</label>
-          <select class="form-select task-select">
-            <option>Todo</option>
-            <option selected>Doing</option>
-            <option>Done</option>
-          </select>
-        </div>
+          <!-- SUBTASKS -->
+          <div class="mb-4">
+            <label class="section-label d-block mb-2">Subtasks</label>
 
-        <!-- SAVE -->
-        <button class="btn btn-save w-100">Save Changes</button>
+            <div class="d-flex flex-column gap-2 mb-2">
+              @for (sub of subtasks(); track $index) {
+                <div class="d-flex align-items-center gap-2">
+                  <input
+                    type="text"
+                    class="form-control task-input"
+                    [ngModel]="sub"
+                    (ngModelChange)="updateSubtask($index, $event)"
+                    [name]="'edit-sub-' + $index"
+                  />
+                  <button class="btn-remove" (click)="removeSubtask($index)">&times;</button>
+                </div>
+              }
+            </div>
 
+            <button class="btn btn-add-subtask w-100" (click)="addSubtask()">+ Add New Subtask</button>
+          </div>
+
+          <!-- STATUS -->
+          <div class="mb-4">
+            <label class="section-label d-block mb-2">Status</label>
+            <select
+              class="form-select task-select"
+              [ngModel]="status()"
+              (ngModelChange)="status.set($event)"
+              name="editTaskStatus"
+            >
+              @for (s of availableStatuses(); track s) {
+                <option [value]="s">{{ s }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- SAVE -->
+          <button
+            class="btn btn-save w-100"
+            (click)="save()"
+            [disabled]="!canSave()"
+          >Save Changes</button>
+        } @else {
+          <p class="text-secondary">No task selected.</p>
+        }
       </div>
     </div>
   </div>

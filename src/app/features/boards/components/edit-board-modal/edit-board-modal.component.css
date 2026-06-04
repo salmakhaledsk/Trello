@@ -1,0 +1,34 @@
+/* Edit Board Modal */
+
+.modal-content {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.modal-content .form-control,
+.modal-content .form-select,
+.modal-content textarea {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+}
+
+.modal-content .form-control::placeholder,
+.modal-content textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.modal-content .form-control:focus,
+.modal-content .form-select:focus,
+.modal-content textarea:focus {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--primary);
+  box-shadow: none;
+}
+
+.modal-content .form-control:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

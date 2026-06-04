@@ -1,9 +1,7 @@
 <header
   class="app-header d-flex align-items-center justify-content-between px-4"
 >
-  <!-- Board Title -->
-  <div class="d-flex align-items-center gap-3">
-    <!-- Toggle Sidebar Button -->
+  <div class="d-flex align-items-center gap-1">
     <button
       class="toggle-sidebar-btn btn p-0 d-flex align-items-center justify-content-center"
       type="button"
@@ -17,34 +15,33 @@
       />
     </button>
 
-    <h1 class="board-title mb-0 fw-bold">Platform Launch</h1>
+    <h3 class="board-title mb-0 fw-bold">
+      {{ selectedBoard()?.name }}
+    </h3>
   </div>
 
-  <!-- Header Actions -->
   <div class="d-flex align-items-center gap-3">
-    <!-- Add New Task Button -->
     <button
-      class="add-task-btn btn px-4 py-2 fw-semibold"
+      class="add-task-btn btn px-3 py-2 fw-semibold"
       data-bs-toggle="modal"
       data-bs-target="#addTaskModal"
+      [disabled]="!selectedBoard()"
     >
       + Add New Task
     </button>
 
-    <!-- 3-dot Menu -->
     <div class="dropdown">
       <button
         class="menu-btn btn p-0 d-flex align-items-center justify-content-center"
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
+        [disabled]="!selectedBoard()"
       >
         <img src="assets/images/dots.png" alt="Menu" width="20" height="20" />
       </button>
 
-      <!-- Dropdown -->
       <ul class="dropdown-menu dropdown-menu-end custom-dropdown shadow mt-3">
-        <!-- Edit Board -->
         <li>
           <a
             class="dropdown-item custom-dropdown-item"
@@ -56,7 +53,6 @@
           </a>
         </li>
 
-        <!-- Delete Board -->
         <li>
           <a
             class="dropdown-item custom-dropdown-item delete-item"
