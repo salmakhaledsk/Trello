@@ -1,6 +1,6 @@
 .board-column {
   min-width: 280px;
-  color: var(--text-primary);
+  flex-shrink: 0;
 }
 
 .column-dot {
@@ -10,14 +10,36 @@
   display: inline-block;
 }
 
-.dot-todo {
+.column-dot.dot-todo {
   background-color: #49C4E5;
 }
 
-.dot-doing {
+.column-dot.dot-doing {
   background-color: #8471F2;
 }
 
-.dot-done {
+.column-dot.dot-done {
   background-color: #67E2AE;
+}
+
+.board-column > span,
+.board-column .d-flex > span {
+  color: var(--text-secondary, #828FA3);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+}
+
+.drop-zone {
+  min-height: 50px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px dashed transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.drop-zone.drop-target {
+  background-color: #635FC71A;
+  border-color: #635FC7;
 }

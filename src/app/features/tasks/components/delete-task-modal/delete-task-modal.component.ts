@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BoardService } from '../../../../core/services/board.service';
+import { Column } from '../../../../core/models/column';
+import { Task } from '../../../../core/models/task';
 
 @Component({
   selector: 'app-delete-task-modal',
@@ -20,8 +22,8 @@ export class DeleteTaskModalComponent {
     const board = this.selectedBoard();
     if (!task || !board) return;
 
-    const column = board.columns.find((c: any) =>
-      c.tasks.some((t: any) => t.id === task.id)
+    const column = board.columns.find((column: Column) =>
+      column.tasks.some((taskItem: Task) => taskItem.id === task.id)
     );
     if (!column) return;
 
@@ -30,9 +32,10 @@ export class DeleteTaskModalComponent {
   }
 
   closeModal() {
-    const modalEl: any = document.getElementById('deleteTaskModal');
+    const modalEl: HTMLElement | null = document.getElementById('deleteTaskModal');
     if (!modalEl) return;
-    const Modal = (window as any).bootstrap?.Modal;
+    const bootstrapWindow = window as unknown as { bootstrap?: { Modal: { getInstance: (el: HTMLElement) => { hide: () => void } | null; new (el: HTMLElement): { hide: () => void } } } };
+    const Modal = bootstrapWindow.bootstrap?.Modal;
     if (Modal) {
       const instance = Modal.getInstance(modalEl) ?? new Modal(modalEl);
       instance.hide();

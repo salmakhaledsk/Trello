@@ -2,6 +2,8 @@ import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BoardService } from '../../../../core/services/board.service';
+import { Column } from '../../../../core/models/column';
+import { Subtask, Task } from '../../../../core/models/task';
 
 @Component({
   selector: 'app-view-task-modal',
@@ -16,19 +18,28 @@ export class ViewTaskModalComponent {
   selectedBoard = this.boardService.selectedBoard;
   selectedTask = this.boardService.selectedTask;
 
-  availableStatuses = computed(() => {
+  availableStatuses = computed<string[]>(() => {
     const board = this.selectedBoard();
     if (!board) return [];
-    return board.columns.map((c: any) => c.name);
+    return board.columns.map((column: Column) => column.name);
   });
+
+  findTaskColumn(): Column | null {
+    const task = this.selectedTask();
+    const board = this.selectedBoard();
+    if (!task || !board) return null;
+    return (
+      board.columns.find((column: Column) =>
+        column.tasks.some((taskItem: Task) => taskItem.id === task.id)
+      ) ?? null
+    );
+  }
 
   toggleSubtask(index: number) {
     const task = this.selectedTask();
     const board = this.selectedBoard();
     if (!task || !board) return;
-    const column = board.columns.find((c: any) =>
-      c.tasks.some((t: any) => t.id === task.id)
-    );
+    const column = this.findTaskColumn();
     if (!column) return;
     this.boardService.toggleSubtask(board.id, column.id, task.id, index);
   }
@@ -38,22 +49,24 @@ export class ViewTaskModalComponent {
     const board = this.selectedBoard();
     if (!task || !board) return;
 
-    const updatedTask: any = { ...task, status: newStatus };
-    const column = board.columns.find((c: any) =>
-      c.tasks.some((t: any) => t.id === task.id)
-    );
+    const column = this.findTaskColumn();
     if (!column) return;
+
+    const updatedTask: Task = { ...task, status: newStatus };
     this.boardService.updateTask(board.id, column.id, updatedTask);
   }
 
-  countCompleted(task: any) {
-    return (task.subtasks ?? []).filter((s: any) => s.isCompleted).length;
+  countCompleted(task: Task): number {
+    return (task.subtasks ?? []).filter(
+      (subtask: Subtask) => subtask.isCompleted
+    ).length;
   }
 
   editTask() {
-    const modalEl: any = document.getElementById('viewTaskModal');
+    const modalEl: HTMLElement | null = document.getElementById('viewTaskModal');
     if (!modalEl) return;
-    const Modal = (window as any).bootstrap?.Modal;
+    const bootstrapWindow = window as unknown as { bootstrap?: { Modal: { getInstance: (el: HTMLElement) => { hide: () => void } | null; new (el: HTMLElement): { hide: () => void } } } };
+    const Modal = bootstrapWindow.bootstrap?.Modal;
     if (Modal) {
       const instance = Modal.getInstance(modalEl) ?? new Modal(modalEl);
       instance.hide();

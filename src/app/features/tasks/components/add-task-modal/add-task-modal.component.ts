@@ -2,6 +2,8 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BoardService } from '../../../../core/services/board.service';
+import { Column } from '../../../../core/models/column';
+import { Task } from '../../../../core/models/task';
 
 @Component({
   selector: 'app-add-task-modal',
@@ -20,10 +22,12 @@ export class AddTaskModalComponent {
   status = signal('');
   subtasks = signal<string[]>(['']);
 
-  availableStatuses = computed(() => {
+  availableStatuses = computed<string[]>(() => {
     const board = this.selectedBoard();
     if (!board) return [];
-    return board.columns.map((c: any) => c.name);
+    return board.columns.map(function (column: Column) {
+      return column.name;
+    });
   });
 
   initEffect = effect(() => {
@@ -34,18 +38,29 @@ export class AddTaskModalComponent {
   });
 
   addSubtask() {
-    this.subtasks.update((s) => [...s, '']);
+    this.subtasks.update(function (currentSubtasks) {
+      return [...currentSubtasks, ''];
+    });
   }
 
   removeSubtask(index: number) {
-    this.subtasks.update((s) => s.filter((_, i) => i !== index));
+    this.subtasks.update(function (currentSubtasks) {
+      return currentSubtasks.filter(function (_: string, i: number) {
+        return i !== index;
+      });
+    });
   }
 
   updateSubtask(index: number, value: string) {
-    this.subtasks.update((s) => s.map((v, i) => (i === index ? value : v)));
+    this.subtasks.update(function (currentSubtasks) {
+      return currentSubtasks.map(function (currentValue: string, i: number) {
+        if (i === index) return value;
+        return currentValue;
+      });
+    });
   }
 
-  canSave() {
+  canSave(): boolean {
     return !!this.title().trim() && !!this.status();
   }
 
@@ -53,17 +68,24 @@ export class AddTaskModalComponent {
     const board = this.selectedBoard();
     if (!board || !this.canSave()) return;
     const status = this.status();
-    const targetColumn = board.columns.find((c: any) => c.name === status) ?? board.columns[0];
+    const targetColumn: Column | undefined =
+      board.columns.find(function (column: Column) {
+        return column.name === status;
+      }) ?? board.columns[0];
     if (!targetColumn) return;
 
-    const newTask: any = {
+    const newTask: Task = {
       id: this.generateId(),
       title: this.title().trim() || 'Untitled Task',
       description: this.description().trim(),
       status: status,
       subtasks: this.subtasks()
-        .filter((t) => t.trim().length > 0)
-        .map((t) => ({ title: t.trim(), isCompleted: false })),
+        .filter(function (currentSubtask: string) {
+          return currentSubtask.trim().length > 0;
+        })
+        .map(function (currentSubtask: string) {
+          return { title: currentSubtask.trim(), isCompleted: false };
+        }),
     };
 
     this.boardService.addTask(board.id, targetColumn.id, newTask);
@@ -79,7 +101,7 @@ export class AddTaskModalComponent {
   }
 
   closeModal() {
-    const modalEl: any = document.getElementById('addTaskModal');
+    const modalEl: HTMLElement | null = document.getElementById('addTaskModal');
     if (!modalEl) return;
     const Modal = (window as any).bootstrap?.Modal;
     if (Modal) {
@@ -88,7 +110,7 @@ export class AddTaskModalComponent {
     }
   }
 
-  generateId() {
+  generateId(): string {
     return Math.random().toString(36).substring(2, 9);
   }
 }

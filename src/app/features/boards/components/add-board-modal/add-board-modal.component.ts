@@ -17,15 +17,21 @@ export class AddBoardModalComponent {
   columns = signal<string[]>(['', '']);
 
   addColumn() {
-    this.columns.update((cols) => [...cols, '']);
+    this.columns.update((current: string[]) => [...current, '']);
   }
 
   removeColumn(index: number) {
-    this.columns.update((cols) => cols.filter((_, i) => i !== index));
+    this.columns.update((current: string[]) =>
+      current.filter((_value: string, i: number) => i !== index)
+    );
   }
 
   updateColumn(index: number, value: string) {
-    this.columns.update((cols) => cols.map((c, i) => (i === index ? value : c)));
+    this.columns.update((current: string[]) =>
+      current.map((currentValue: string, i: number) =>
+        i === index ? value : currentValue
+      )
+    );
   }
 
   save() {
@@ -41,9 +47,10 @@ export class AddBoardModalComponent {
   }
 
   closeModal() {
-    const modalEl: any = document.getElementById('addBoardModal');
+    const modalEl: HTMLElement | null = document.getElementById('addBoardModal');
     if (!modalEl) return;
-    const Modal = (window as any).bootstrap?.Modal;
+    const bootstrapWindow = window as unknown as { bootstrap?: { Modal: { getInstance: (el: HTMLElement) => { hide: () => void } | null; new (el: HTMLElement): { hide: () => void } } } };
+    const Modal = bootstrapWindow.bootstrap?.Modal;
     if (Modal) {
       const instance = Modal.getInstance(modalEl) ?? new Modal(modalEl);
       instance.hide();

@@ -22,9 +22,10 @@ export class DeleteBoardModalComponent {
   }
 
   closeModal(): void {
-    const modalEl: any = document.getElementById('deleteBoardModal');
+    const modalEl: HTMLElement | null = document.getElementById('deleteBoardModal');
     if (!modalEl) return;
-    const Modal = (window as any).bootstrap?.Modal;
+    const bootstrapWindow = window as unknown as { bootstrap?: { Modal: { getInstance: (el: HTMLElement) => { hide: () => void } | null; new (el: HTMLElement): { hide: () => void } } } };
+    const Modal = bootstrapWindow.bootstrap?.Modal;
     if (Modal) {
       const instance = Modal.getInstance(modalEl) ?? new Modal(modalEl);
       instance.hide();

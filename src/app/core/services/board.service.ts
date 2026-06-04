@@ -1,6 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { Board } from '../models/board';
+import { Column } from '../models/column';
+import { Subtask, Task } from '../models/task';
+
+interface DataJson {
+  boards: Board[];
+}
 
 @Injectable({
   providedIn: 'root',
@@ -9,32 +16,24 @@ export class BoardService {
 
   http = inject(HttpClient);
 
-  boards = signal<any[]>([]);
+  boards = signal<Board[]>([]);
   selectedBoardId = signal<string | null>(null);
   selectedTaskId = signal<string | null>(null);
 
-  selectedBoard = computed(() => {
-    return (
-      this.boards().find(
-        board => board.id === this.selectedBoardId()
-      ) || null
-    );
+  selectedBoard = computed<Board | null>(() => {
+    const id = this.selectedBoardId();
+    return this.boards().find((board: Board) => board.id === id) ?? null;
   });
 
-  selectedTask = computed(() => {
-
+  selectedTask = computed<Task | null>(() => {
     const board = this.selectedBoard();
-
-    if (!board || !this.selectedTaskId()) {
+    const taskId = this.selectedTaskId();
+    if (!board || !taskId) {
       return null;
     }
 
-    for (let column of board.columns) {
-
-      const task = column.tasks.find(
-        (task: any) => task.id === this.selectedTaskId()
-      );
-
+    for (const column of board.columns) {
+      const task = column.tasks.find((task: Task) => task.id === taskId);
       if (task) {
         return task;
       }
@@ -44,11 +43,9 @@ export class BoardService {
   });
 
   async loadBoards() {
-
-    const data: any = await firstValueFrom(
-      this.http.get('assets/data/data.json')
+    const data: DataJson = await firstValueFrom(
+      this.http.get<DataJson>('assets/data/data.json')
     );
-
     this.boards.set(data.boards);
 
     if (data.boards.length > 0) {
@@ -65,52 +62,52 @@ export class BoardService {
   }
 
   addBoard(name: string, columnNames: string[] = []) {
-
-    const newBoard: any = {
+    const newBoard: Board = {
       id: this.generateId(),
-      name,
+      name: name,
       columns: columnNames
-        .filter(c => c.trim().length > 0)
-        .map(c => ({
+        .filter((columnName: string) => columnName.trim().length > 0)
+        .map((columnName: string): Column => ({
           id: this.generateId(),
-          name: c.trim(),
-          tasks: []
+          name: columnName.trim(),
+          tasks: [],
         }))
     };
 
-    this.boards.update(boards => [
-      ...boards,
-      newBoard
-    ]);
+    this.boards.update((currentBoards: Board[]) => [...currentBoards, newBoard]);
   }
 
   updateBoard(id: string, name: string, columnNames: string[] = []) {
-    this.boards.update(boards =>
-      boards.map((board: any) => {
+    this.boards.update((currentBoards: Board[]) =>
+      currentBoards.map((board: Board) => {
         if (board.id !== id) return board;
 
-        const normalizedNames = columnNames.filter(c => c.trim().length > 0);
-        const updatedColumns = normalizedNames.map((colName: string) => {
-          const existing = board.columns.find((c: any) => c.name === colName);
-          if (existing) return { ...existing, name: colName };
-          return {
-            id: this.generateId(),
-            name: colName,
-            tasks: [],
-          };
-        });
+        const updatedColumns: Column[] = columnNames
+          .filter((columnName: string) => columnName.trim().length > 0)
+          .map((columnName: string): Column => {
+            const existing = board.columns.find((column: Column) => column.name === columnName);
+            if (existing) {
+              return { ...existing, name: columnName };
+            }
+            return {
+              id: this.generateId(),
+              name: columnName.trim(),
+              tasks: [],
+            };
+          });
 
-        return { ...board, name: name.trim() || board.name, columns: updatedColumns };
+        return {
+          ...board,
+          name: name.trim() || board.name,
+          columns: updatedColumns,
+        };
       })
     );
   }
 
   deleteBoard(id: string) {
-
-    this.boards.update(
-      boards => boards.filter(
-        board => board.id !== id
-      )
+    this.boards.update((currentBoards: Board[]) =>
+      currentBoards.filter((board: Board) => board.id !== id)
     );
 
     if (this.selectedBoardId() === id) {
@@ -118,112 +115,114 @@ export class BoardService {
     }
   }
 
-  addTask(
-    boardId: string,
-    columnId: string,
-    task: any
-  ) {
-
-    this.boards.update(boards =>
-      boards.map(board => {
-
-        if (board.id !== boardId) {
-          return board;
-        }
-
+  addTask(boardId: string, columnId: string, task: Task) {
+    this.boards.update((currentBoards: Board[]) =>
+      currentBoards.map((board: Board) => {
+        if (board.id !== boardId) return board;
         return {
           ...board,
-
-          columns: board.columns.map((column: any) => {
-
-            if (column.id !== columnId) {
-              return column;
-            }
-
+          columns: board.columns.map((column: Column) => {
+            if (column.id !== columnId) return column;
             return {
               ...column,
-              tasks: [...column.tasks, task]
+              tasks: [...column.tasks, task],
             };
-
-          })
+          }),
         };
-
       })
     );
   }
 
-  updateTask(
-    boardId: string,
-    columnId: string,
-    updatedTask: any
-  ) {
-
-    this.boards.update(boards =>
-      boards.map(board => {
-
-        if (board.id !== boardId) {
-          return board;
-        }
-
+  updateTask(boardId: string, columnId: string, updatedTask: Task) {
+    this.boards.update((currentBoards: Board[]) =>
+      currentBoards.map((board: Board) => {
+        if (board.id !== boardId) return board;
         return {
           ...board,
-
-          columns: board.columns.map((column: any) => {
-
-            if (column.id !== columnId) {
-              return column;
-            }
-
+          columns: board.columns.map((column: Column) => {
+            if (column.id !== columnId) return column;
             return {
               ...column,
-
-              tasks: column.tasks.map((task: any) =>
-                task.id === updatedTask.id
-                  ? updatedTask
-                  : task
-              )
+              tasks: column.tasks.map((task: Task) =>
+                task.id === updatedTask.id ? updatedTask : task
+              ),
             };
-
-          })
+          }),
         };
-
       })
     );
   }
 
-  deleteTask(
+  deleteTask(boardId: string, columnId: string, taskId: string) {
+    this.boards.update((currentBoards: Board[]) =>
+      currentBoards.map((board: Board) => {
+        if (board.id !== boardId) return board;
+        return {
+          ...board,
+          columns: board.columns.map((column: Column) => {
+            if (column.id !== columnId) return column;
+            return {
+              ...column,
+              tasks: column.tasks.filter((task: Task) => task.id !== taskId),
+            };
+          }),
+        };
+      })
+    );
+  }
+
+  moveTask(
     boardId: string,
-    columnId: string,
-    taskId: string
+    taskId: string,
+    fromColumnId: string,
+    toColumnId: string,
+    newIndex: number
   ) {
+    let movedTask: Task | null = null;
 
-    this.boards.update(boards =>
-      boards.map(board => {
+    this.boards.update((currentBoards: Board[]) =>
+      currentBoards.map((board: Board) => {
+        if (board.id !== boardId) return board;
 
-        if (board.id !== boardId) {
-          return board;
-        }
+        const fromColumn = board.columns.find(
+          (column: Column) => column.id === fromColumnId
+        );
+        const toColumn = board.columns.find(
+          (column: Column) => column.id === toColumnId
+        );
+        if (!fromColumn || !toColumn) return board;
+
+        const taskIndex = fromColumn.tasks.findIndex(
+          (task: Task) => task.id === taskId
+        );
+        if (taskIndex === -1) return board;
+
+        const task: Task = fromColumn.tasks[taskIndex];
+        movedTask = {
+          ...task,
+          status: toColumn.name,
+        };
+
+        const newFromTasks: Task[] = fromColumn.tasks.filter(
+          (taskItem: Task) => taskItem.id !== taskId
+        );
+
+        const insertAt = Math.max(0, Math.min(newIndex, toColumn.tasks.length));
+        const newToTasks: Task[] = [...toColumn.tasks];
+        newToTasks.splice(insertAt, 0, movedTask);
 
         return {
           ...board,
-
-          columns: board.columns.map((column: any) => {
-
-            if (column.id !== columnId) {
-              return column;
+          columns: board.columns.map((column: Column) => {
+            if (column.id === fromColumnId) {
+              return { ...column, tasks: newFromTasks };
             }
-
-            return {
-              ...column,
-
-              tasks: column.tasks.filter(
-                (task: any) => task.id !== taskId
-              )
-            };
-
-          })
+            if (column.id === toColumnId) {
+              return { ...column, tasks: newToTasks };
+            }
+            return column;
+          }),
         };
-
       })
     );
   }
@@ -234,62 +233,35 @@ export class BoardService {
     taskId: string,
     subtaskIndex: number
   ) {
-
-    this.boards.update(boards =>
-      boards.map(board => {
-
-        if (board.id !== boardId) {
-          return board;
-        }
-
+    this.boards.update((currentBoards: Board[]) =>
+      currentBoards.map((board: Board) => {
+        if (board.id !== boardId) return board;
         return {
           ...board,
-
-          columns: board.columns.map((column: any) => {
-
-            if (column.id !== columnId) {
-              return column;
-            }
-
+          columns: board.columns.map((column: Column) => {
+            if (column.id !== columnId) return column;
             return {
               ...column,
-
-              tasks: column.tasks.map((task: any) => {
-
-                if (task.id !== taskId) {
-                  return task;
-                }
-
-                const updatedSubtasks = task.subtasks.map(
-                  (subtask: any, index: number) => {
-
+              tasks: column.tasks.map((task: Task) => {
+                if (task.id !== taskId) return task;
+                const updatedSubtasks: Subtask[] = (task.subtasks ?? []).map(
+                  (subtask: Subtask, index: number) => {
                     if (index === subtaskIndex) {
-                      return {
-                        ...subtask,
-                        isCompleted: !subtask.isCompleted
-                      };
+                      return { ...subtask, isCompleted: !subtask.isCompleted };
                     }
-
                     return subtask;
                   }
                 );
-
-                return {
-                  ...task,
-                  subtasks: updatedSubtasks
-                };
-              })
+                return { ...task, subtasks: updatedSubtasks };
+              }),
             };
-
-          })
+          }),
         };
-
       })
     );
   }
 
-  generateId() {
+  generateId(): string {
     return Math.random().toString(36).substring(2, 9);
   }
-
 }

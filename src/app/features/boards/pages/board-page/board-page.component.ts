@@ -32,7 +32,7 @@ export class BoardPageComponent implements OnInit {
 
   selectedBoard = this.boardService.selectedBoard;
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.boardService.loadBoards();
   }
 }

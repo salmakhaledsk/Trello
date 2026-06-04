@@ -2,6 +2,8 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BoardService } from '../../../../core/services/board.service';
+import { Column } from '../../../../core/models/column';
+import { Subtask, Task } from '../../../../core/models/task';
 
 @Component({
   selector: 'app-edit-task-modal',
@@ -23,13 +25,15 @@ export class EditTaskModalComponent {
   currentColumnId: string | null = null;
   currentTaskId: string | null = null;
 
-  availableStatuses = computed(() => {
+  availableStatuses = computed<string[]>(() => {
     const board = this.selectedBoard();
     if (!board) return [];
-    return board.columns.map((c: any) => c.name);
+    return board.columns.map((column: Column) => column.name);
   });
 
-  canSave = computed(() => !!this.title().trim() && !!this.status());
+  canSave = computed<boolean>(
+    () => !!this.title().trim() && !!this.status()
+  );
 
   syncEffect = effect(() => {
     const task = this.selectedTask();
@@ -42,27 +46,35 @@ export class EditTaskModalComponent {
 
     if (task.id !== this.currentTaskId) {
       this.currentTaskId = task.id;
-      const column = board.columns.find((c: any) =>
-        c.tasks.some((t: any) => t.id === task.id)
+      const column = board.columns.find((column: Column) =>
+        column.tasks.some((taskItem: Task) => taskItem.id === task.id)
       );
       this.currentColumnId = column?.id ?? null;
       this.title.set(task.title);
       this.description.set(task.description ?? '');
       this.status.set(task.status ?? column?.name ?? '');
-      this.subtasks.set((task.subtasks ?? []).map((s: any) => s.title));
+      this.subtasks.set(
+        (task.subtasks ?? []).map((subtask: Subtask) => subtask.title)
+      );
     }
   });
 
   addSubtask() {
-    this.subtasks.update((s) => [...s, '']);
+    this.subtasks.update((current: string[]) => [...current, '']);
   }
 
   removeSubtask(index: number) {
-    this.subtasks.update((s) => s.filter((_, i) => i !== index));
+    this.subtasks.update((current: string[]) =>
+      current.filter((_value: string, i: number) => i !== index)
+    );
   }
 
   updateSubtask(index: number, value: string) {
-    this.subtasks.update((s) => s.map((v, i) => (i === index ? value : v)));
+    this.subtasks.update((current: string[]) =>
+      current.map((currentValue: string, i: number) =>
+        i === index ? value : currentValue
+      )
+    );
   }
 
   save() {
@@ -71,14 +83,14 @@ export class EditTaskModalComponent {
     if (!board || !task || !this.canSave() || !this.currentColumnId) return;
 
     const originalSubtasks = task.subtasks ?? [];
-    const newSubtasks = this.subtasks()
-      .filter((t) => t.trim().length > 0)
-      .map((t, idx) => ({
-        title: t.trim(),
-        isCompleted: originalSubtasks[idx]?.isCompleted ?? false,
+    const newSubtasks: Subtask[] = this.subtasks()
+      .filter((currentTitle: string) => currentTitle.trim().length > 0)
+      .map((currentTitle: string, index: number): Subtask => ({
+        title: currentTitle.trim(),
+        isCompleted: originalSubtasks[index]?.isCompleted ?? false,
       }));
 
-    const updatedTask: any = {
+    const updatedTask: Task = {
       ...task,
       title: this.title().trim() || task.title,
       description: this.description().trim(),
@@ -91,9 +103,10 @@ export class EditTaskModalComponent {
   }
 
   closeModal() {
-    const modalEl: any = document.getElementById('editTaskModal');
+    const modalEl: HTMLElement | null = document.getElementById('editTaskModal');
     if (!modalEl) return;
-    const Modal = (window as any).bootstrap?.Modal;
+    const bootstrapWindow = window as unknown as { bootstrap?: { Modal: { getInstance: (el: HTMLElement) => { hide: () => void } | null; new (el: HTMLElement): { hide: () => void } } } };
+    const Modal = bootstrapWindow.bootstrap?.Modal;
     if (Modal) {
       const instance = Modal.getInstance(modalEl) ?? new Modal(modalEl);
       instance.hide();

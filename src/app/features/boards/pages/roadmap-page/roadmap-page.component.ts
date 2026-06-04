@@ -32,9 +32,11 @@ export class RoadmapPageComponent implements OnInit {
 
   selectedBoard = this.boardService.selectedBoard;
 
-  ngOnInit(): void {
+  ngOnInit(){
     this.boardService.loadBoards().then(() => {
-      const board = this.boardService.boards().find((b: any) => b.name === 'Roadmap');
+      const board = this.boardService.boards().find(function (b) {
+        return b.name === 'Roadmap';
+      });
       if (board) {
         this.boardService.selectBoard(board.id);
       }

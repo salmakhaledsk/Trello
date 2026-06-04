@@ -1,5 +1,6 @@
 import { Component, inject, Input } from '@angular/core';
 import { BoardService } from '../../../../core/services/board.service';
+import { Task } from '../../../../core/models/task';
 
 @Component({
   selector: 'app-task-card',
@@ -11,7 +12,7 @@ import { BoardService } from '../../../../core/services/board.service';
 export class TaskCardComponent {
   boardService = inject(BoardService);
 
-  @Input({ required: true }) task!: any;
+  @Input({ required: true }) task!: Task;
   @Input({ required: true }) boardId!: string;
   @Input({ required: true }) columnId!: string;
 
@@ -19,7 +20,19 @@ export class TaskCardComponent {
     this.boardService.selectTask(this.task.id);
   }
 
-  getCompletedCount() {
-    return (this.task.subtasks ?? []).filter((s: any) => s.isCompleted).length;
+  onDragStart(event: DragEvent) {
+    event.dataTransfer?.setData('taskId', this.task.id);
+    event.dataTransfer?.setData('fromColumnId', this.columnId);
+    (event.currentTarget as HTMLElement).classList.add('dragging');
+  }
+
+  onDragEnd(event: DragEvent) {
+    (event.currentTarget as HTMLElement).classList.remove('dragging');
+  }
+
+  getCompletedCount(): number {
+    return (this.task.subtasks ?? []).filter((subtask) => {
+      return subtask.isCompleted;
+    }).length;
   }
 }
